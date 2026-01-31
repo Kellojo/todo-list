@@ -1,0 +1,52 @@
+import type { RecordModel } from "pocketbase";
+import { pb, getCurrentUser } from "./pocketbase";
+
+export async function hasAnyTodoLists(): Promise<boolean> {
+  try {
+    const lists = await pb
+      .collection("todo_lists")
+      .getFullList(1, { filter: `owner="${getCurrentUser()?.id}"` });
+    return lists.length > 0;
+  } catch (err) {
+    return false;
+  }
+}
+
+export async function getTodoLists(): Promise<TodoListRecord[]> {
+  return pb
+    .collection("todo_lists")
+    .getFullList(200, { filter: `owner="${getCurrentUser()?.id}"` });
+}
+
+export async function createTodoList(title: string): Promise<TodoListRecord> {
+  return pb.collection("todo_lists").create({
+    title,
+    owner: getCurrentUser()?.id,
+  });
+}
+
+export async function ensureUserHasTodoList(): Promise<TodoListRecord> {
+  const hasLists = await hasAnyTodoLists();
+  if (!hasLists) return await createTodoList("My First Todo List");
+  const lists = await getTodoLists();
+  return lists[0];
+}
+
+export async function getTodosForList(listId: string): Promise<TodoRecord[]> {
+  return pb.collection("todos").getFullList(-1, { filter: `list="${listId}"` });
+}
+
+export async function updateTodo(todo: TodoRecord): Promise<TodoRecord> {
+  return pb.collection("todos").update(todo.id, todo);
+}
+
+export interface TodoListRecord extends RecordModel {
+  title: string;
+  owner: string;
+}
+
+export interface TodoRecord extends RecordModel {
+  title: string;
+  completed: boolean;
+  list: string;
+}
