@@ -9,8 +9,10 @@ node_modules
 /build
 
 # PocketBase
-/pocketbase
-/pb_data
+pb_data
+pocketbase/CHANGELOG.md
+pocketbase/LICENSE.md
+pocketbase/pocketbase.exe
 
 # OS
 .DS_Store
