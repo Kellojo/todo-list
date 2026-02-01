@@ -31,7 +31,7 @@
     titleChangeTimeout = setTimeout(() => {
       updateTodo(itemCopy);
       onUpdated?.(itemCopy);
-    }, 100);
+    }, 1000);
   }
 
   async function onDeleteTodo() {
@@ -51,6 +51,7 @@
   tabindex="-1"
   onkeypress={(e) => {}}
   onclick={() => {
+    return;
     if (
       document.activeElement === titleField ||
       document.activeElement === deleteButton

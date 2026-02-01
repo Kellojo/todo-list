@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ensureAuthenticated } from "$lib/pocketbase";
+  import { ensureAuthenticated, pb } from "$lib/pocketbase";
   import { onMount } from "svelte";
   import Avatar from "$lib/controls/Avatar.svelte";
   import {
@@ -24,9 +24,7 @@
     await ensureAuthenticated();
     const urlParams = new URLSearchParams(window.location.search);
     const listId = urlParams.get("list");
-    currentList = await ensureUserHasTodoList(listId);
-    todoItems = await getTodosForList(currentList.id);
-    goto("/dashboard?list=" + currentList.id, { replaceState: true });
+    await setList(listId);
 
     loading = false;
   });
@@ -45,12 +43,6 @@
       console.error("Error creating todo:", error);
       return;
     }
-  }
-
-  function onTodoUpdated(updatedItem: RecordModel) {
-    todoItems = todoItems.map((item) =>
-      item.id === updatedItem.id ? updatedItem : item,
-    );
   }
 
   function onTodoDeleted(id: string) {
@@ -73,9 +65,20 @@
   }
 
   async function onListSelected(list: TodoListRecord) {
-    currentList = list;
+    setList(list.id);
+  }
+
+  async function setList(listId: string | null) {
+    currentList = await ensureUserHasTodoList(listId);
     todoItems = await getTodosForList(currentList.id);
-    goto("/dashboard?list=" + list.id);
+
+    pb.collection("todos").unsubscribe();
+    pb.collection("todos").subscribe(`*`, async (e) => {
+      if (e.record.list !== currentList!.id) return;
+      todoItems = await getTodosForList(currentList!.id);
+    });
+
+    goto("/dashboard?list=" + currentList.id, { replaceState: true });
   }
 </script>
 
@@ -106,7 +109,6 @@
             title={item.title}
             completed={item.completed}
             onDeleted={onTodoDeleted}
-            onUpdated={onTodoUpdated}
           />
         {/each}
       </div>

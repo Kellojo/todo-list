@@ -7,6 +7,7 @@
   import Icon from "@iconify/svelte";
   import { onMount } from "svelte";
   import Button from "./Button.svelte";
+  import { pb } from "$lib/pocketbase";
 
   let lists: TodoListRecord[] = $state([]);
   let {
@@ -18,6 +19,18 @@
   onMount(async () => {
     try {
       lists = await getTodoLists();
+
+      pb.collection("todo_lists").subscribe(`*`, async (e) => {
+        if (e.action === "create") {
+          lists = [...lists, e.record as TodoListRecord];
+        } else if (e.action === "update") {
+          lists = lists.map((list) =>
+            list.id === e.record.id ? (e.record as TodoListRecord) : list,
+          );
+        } else if (e.action === "delete") {
+          lists = lists.filter((list) => list.id !== e.record.id);
+        }
+      });
     } catch (error) {}
   });
 
@@ -33,7 +46,7 @@
   async function onCreateList() {
     try {
       const list = await createTodoList("New List");
-      lists = [...lists, list];
+      //lists = [...lists, list];
     } catch (error) {
       console.error("Error creating new list:", error);
       return;
