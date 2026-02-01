@@ -38,7 +38,7 @@ RUN mkdir -p /app/pb_data
 RUN mkdir -p /app/pb_migrations
 
 # Copy built SvelteKit app
-COPY /pocketbase/pb_migrations /app/pb_migrations
+COPY pocketbase/pb_migrations /app/pb_migrations
 COPY --from=build /app/build ./build
 COPY --from=build /app/package*.json ./
 COPY --from=build /app/node_modules ./node_modules
