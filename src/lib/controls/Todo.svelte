@@ -12,6 +12,7 @@
 
   let titleChangeTimeout: number | undefined;
   let titleField: HTMLSpanElement | null = null;
+  let deleteButton: HTMLButtonElement | null = null;
 
   function checkedChange(event: Event) {
     const itemCopy: TodoRecord = { ...item };
@@ -46,8 +47,24 @@
 <div
   class="item"
   style="order: {completed ? 1 : 1}"
+  role="button"
+  tabindex="-1"
+  onkeypress={(e) => {}}
   onclick={() => {
+    if (
+      document.activeElement === titleField ||
+      document.activeElement === deleteButton
+    )
+      return;
     titleField?.focus();
+
+    // Move cursor to end
+    const range = document.createRange();
+    range.selectNodeContents(titleField!);
+    range.collapse(false);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
   }}
 >
   <Checkbox {completed} onchange={checkedChange} />
@@ -55,11 +72,14 @@
     bind:this={titleField}
     class:completed
     contenteditable="true"
+    spellcheck={!completed}
     oninput={titleChange}
   >
     {title}
   </span>
-  <button class="delete-btn" onclick={onDeleteTodo}>×</button>
+  <button bind:this={deleteButton} class="delete-btn" onclick={onDeleteTodo}
+    >×</button
+  >
 </div>
 
 <style>
@@ -133,11 +153,17 @@
     line-height: 1;
   }
 
-  .delete-btn:hover {
+  .delete-btn:hover,
+  .delete-btn:focus {
     color: var(--error);
   }
 
-  .item:hover .delete-btn {
+  .delete-btn:focus {
+    outline: none;
+  }
+
+  .item:hover .delete-btn,
+  .item:focus-within .delete-btn {
     opacity: 1;
   }
 </style>

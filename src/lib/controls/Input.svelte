@@ -1,9 +1,14 @@
 <script lang="ts">
   let {
+    id = null,
     placeholder = "",
     value = $bindable<string>(""),
+    type = "text",
     class: className = "",
+    required = false,
     onsubmit = undefined,
+    disabled = false,
+    width = undefined,
   } = $props();
 
   function onkeydown(event: KeyboardEvent) {
@@ -14,7 +19,17 @@
   }
 </script>
 
-<input {placeholder} {value} class={className} {onkeydown} />
+<input
+  {id}
+  {placeholder}
+  bind:value
+  {type}
+  {required}
+  class={className}
+  {width}
+  {disabled}
+  {onkeydown}
+/>
 
 <style>
   input {

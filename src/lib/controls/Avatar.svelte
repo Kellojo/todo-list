@@ -1,15 +1,20 @@
 <script lang="ts">
-  import { pb, getCurrentUser, type UserRecord } from "$lib/pocketbase";
+  import { pb, getCurrentUser, type UserRecord, logout } from "$lib/pocketbase";
   import { onMount } from "svelte";
+  import Button from "./Button.svelte";
 
   let user: UserRecord | null = $state(null);
 
   onMount(() => {
     user = getCurrentUser();
   });
+
+  function onLogoutPress() {
+    logout();
+  }
 </script>
 
-<div class="container">
+<button class="container" id="avatar" popovertarget="avatar-popover">
   {#if user?.avatar}
     <img
       src={pb.files.getURL(user, user?.avatar)}
@@ -25,16 +30,46 @@
       {/if}
     </div>
   {/if}
+</button>
+
+<div id="avatar-popover" anchor="avatar" popover class="popover">
+  <div class="info">
+    <div>{user?.name}</div>
+    <div class="email">{user?.email}</div>
+    <div class="created">
+      Created {new Date(user?.created ? user.created : "").toLocaleDateString()}
+    </div>
+  </div>
+  <Button
+    text="Logout"
+    appearance="error"
+    textAlign="left"
+    width="100%"
+    icon="material-symbols:logout-rounded"
+    press={onLogoutPress}
+  />
 </div>
 
 <style>
   .container {
+    cursor: pointer;
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
     overflow: hidden;
     box-shadow: var(--shadow-s);
     background: var(--backgroundLight);
+    color: var(--primaryText);
+    border: 2px solid var(--borderColor);
+    outline: none;
+    padding: 0;
+    flex-shrink: 0;
+
+    transition: all 0.2s;
+  }
+
+  .container:hover {
+    border: 2px solid var(--primaryText);
   }
 
   .avatar-image {
@@ -55,5 +90,37 @@
     font-size: 1.5rem;
 
     user-select: none;
+  }
+
+  .popover {
+    width: 250px;
+    top: anchor(bottom);
+    left: anchor(right);
+    margin: 0;
+    padding: 1rem;
+    transform: translate(-100%, 0.5rem);
+
+    border-radius: 1rem;
+    background: var(--background);
+    backdrop-filter: blur(2rem);
+    box-shadow: var(--shadow-l);
+    border: 1px solid var(--borderColor);
+    color: var(--primaryText);
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .email {
+    font-weight: bold;
+  }
+
+  .created {
+    font-size: 0.875rem;
+    color: var(--secondaryText);
   }
 </style>

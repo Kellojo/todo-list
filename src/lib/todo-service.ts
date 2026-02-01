@@ -25,10 +25,20 @@ export async function createTodoList(title: string): Promise<TodoListRecord> {
   });
 }
 
-export async function ensureUserHasTodoList(): Promise<TodoListRecord> {
+export async function ensureUserHasTodoList(
+  preferredListId: string | null = null,
+): Promise<TodoListRecord> {
   const hasLists = await hasAnyTodoLists();
   if (!hasLists) return await createTodoList("My First Todo List");
   const lists = await getTodoLists();
+
+  if (preferredListId) {
+    const preferredList = lists.find((list) => list.id === preferredListId);
+    if (preferredList) {
+      return preferredList;
+    }
+  }
+
   return lists[0];
 }
 

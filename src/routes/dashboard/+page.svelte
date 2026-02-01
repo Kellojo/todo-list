@@ -11,22 +11,27 @@
   import type { RecordModel } from "pocketbase";
   import Todo from "$lib/controls/Todo.svelte";
   import Input from "$lib/controls/Input.svelte";
+  import ListDrawer from "$lib/controls/ListDrawer.svelte";
+  import { goto } from "$app/navigation";
 
   let loading = $state(true);
   let currentList: TodoListRecord | null = $state(null);
   let todoItems: RecordModel[] = $state([]);
   let subtitle: string = $derived.by(() => formatSubtitle(todoItems));
+  let drawerOpen = $state(false);
 
   onMount(async () => {
     await ensureAuthenticated();
-    currentList = await ensureUserHasTodoList();
+    const urlParams = new URLSearchParams(window.location.search);
+    const listId = urlParams.get("list");
+    currentList = await ensureUserHasTodoList(listId);
     todoItems = await getTodosForList(currentList.id);
+    goto("/dashboard?list=" + currentList.id, { replaceState: true });
 
     loading = false;
   });
 
   async function onCreateNewTodo(event: Event) {
-    console.log("Creating new todo...");
     const inputElement = event.target as HTMLInputElement;
     const title = inputElement.value.trim();
     if (title.length === 0) return;
@@ -62,36 +67,61 @@
 
     return `${completedCount} of ${totalCount} completed`;
   }
+
+  function toggleDrawer() {
+    drawerOpen = !drawerOpen;
+  }
+
+  async function onListSelected(list: TodoListRecord) {
+    currentList = list;
+    todoItems = await getTodosForList(currentList.id);
+    goto("/dashboard?list=" + list.id);
+  }
 </script>
 
 {#if !loading}
   <main>
-    <nav>
-      <div class="title-section">
-        <h1>{currentList?.title}</h1>
-        <div class="subtitle">{subtitle}</div>
+    <div class="main-page">
+      <nav>
+        <div
+          class="title-section"
+          onclick={toggleDrawer}
+          onkeydown={toggleDrawer}
+          role="button"
+          tabindex="0"
+        >
+          <h1 class="title">
+            {currentList?.title}
+          </h1>
+          <div class="subtitle">{subtitle}</div>
+        </div>
+
+        <Avatar />
+      </nav>
+
+      <div class="list">
+        {#each todoItems as item}
+          <Todo
+            {item}
+            title={item.title}
+            completed={item.completed}
+            onDeleted={onTodoDeleted}
+            onUpdated={onTodoUpdated}
+          />
+        {/each}
       </div>
 
-      <Avatar />
-    </nav>
-
-    <div class="list">
-      {#each todoItems as item}
-        <Todo
-          {item}
-          title={item.title}
-          completed={item.completed}
-          onDeleted={onTodoDeleted}
-          onUpdated={onTodoUpdated}
-        />
-      {/each}
+      <Input
+        class="create-todo"
+        placeholder="Add new todo..."
+        value={""}
+        onsubmit={onCreateNewTodo}
+      />
     </div>
-
-    <Input
-      class="create-todo"
-      placeholder="Add new todo..."
-      value={""}
-      onsubmit={onCreateNewTodo}
+    <ListDrawer
+      bind:open={drawerOpen}
+      listSelected={onListSelected}
+      selectedListId={currentList?.id}
     />
   </main>
 {/if}
@@ -99,14 +129,15 @@
 <style>
   main {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 1rem;
     min-height: calc(100vh - 4rem);
+    overflow: hidden;
 
     padding: 2rem;
     margin: 2rem auto;
     box-sizing: border-box;
-    max-width: 850px;
+    max-width: var(--contentMaxWidth);
 
     border-radius: 1.5rem;
     background: var(--background);
@@ -116,16 +147,31 @@
     width: 100%;
   }
 
+  .main-page {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
   nav {
     display: flex;
     justify-content: space-between;
     align-items: start;
   }
 
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
   .title-section {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    outline: none;
   }
   .subtitle {
     color: var(--secondaryText);

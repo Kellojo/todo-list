@@ -13,15 +13,25 @@ export function getCurrentUser(): UserRecord | null {
   return pb.authStore.record as UserRecord | null;
 }
 
+export function isAuthenticated(): boolean {
+  return pb.authStore.isValid;
+}
+
 export const ensureAuthenticated = async () => {
-  if (!pb.authStore.isValid) {
-    goto("/login");
+  if (!isAuthenticated()) {
+    goto("/auth");
+  }
+};
+
+export const ensureNotAuthenticated = async () => {
+  if (isAuthenticated()) {
+    goto("/dashboard");
   }
 };
 
 export const logout = () => {
   pb.authStore.clear();
-  goto("/");
+  window.location.href = "/";
 };
 
 export interface UserRecord extends RecordModel {
