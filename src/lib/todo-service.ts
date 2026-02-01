@@ -36,8 +36,23 @@ export async function getTodosForList(listId: string): Promise<TodoRecord[]> {
   return pb.collection("todos").getFullList(-1, { filter: `list="${listId}"` });
 }
 
+export async function createTodo(
+  title: string,
+  listId: string,
+): Promise<TodoRecord> {
+  return pb.collection("todos").create({
+    title,
+    completed: false,
+    list: listId,
+  });
+}
+
 export async function updateTodo(todo: TodoRecord): Promise<TodoRecord> {
   return pb.collection("todos").update(todo.id, todo);
+}
+
+export async function deleteTodo(todoId: string): Promise<void> {
+  await pb.collection("todos").delete(todoId);
 }
 
 export interface TodoListRecord extends RecordModel {

@@ -21,6 +21,10 @@
     padding: 0.5rem;
   }
 
+  input[type="checkbox"]:focus-visible {
+    outline: 1px dashed var(--secondaryText);
+  }
+
   input[type="checkbox"]:hover {
     border-color: var(--primaryText);
   }

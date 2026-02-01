@@ -53,5 +53,7 @@
     justify-content: center;
     font-weight: bold;
     font-size: 1.5rem;
+
+    user-select: none;
   }
 </style>
