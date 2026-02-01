@@ -15,6 +15,7 @@ dist
 
 # PocketBase
 pocketbase
+!pocketbase/pb_migrations
 pb_data
 
 # Environment files
