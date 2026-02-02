@@ -9,6 +9,7 @@
   let { children } = $props();
 
   import { onNavigate } from "$app/navigation";
+  import Appinfo from "$lib/controls/Appinfo.svelte";
 
   onNavigate((navigation) => {
     if (!document.startViewTransition) return;
@@ -37,3 +38,5 @@
 <div class="background"></div>
 
 {@render children()}
+
+<Appinfo />

@@ -1,6 +1,5 @@
 import { goto } from "$app/navigation";
 import PocketBase, { type RecordModel } from "pocketbase";
-import { writable } from "svelte/store";
 
 // Get PocketBase URL from environment or use default
 const PB_URL = import.meta.env.PUBLIC_POCKETBASE_URL || "http://localhost:8090";
@@ -33,6 +32,10 @@ export const logout = () => {
   pb.authStore.clear();
   window.location.href = "/";
 };
+
+export function getAdminPanelUrl(): string {
+  return `${PB_URL}/_`;
+}
 
 export interface UserRecord extends RecordModel {
   avatar: string;
