@@ -36,9 +36,11 @@ RUN wget https://github.com/pocketbase/pocketbase/releases/download/v${POCKETBAS
 # Create PocketBase data directory
 RUN mkdir -p /app/pb_data
 RUN mkdir -p /app/pb_migrations
+RUN mkdir -p /app/pb_hooks
 
 # Copy built SvelteKit app
 COPY --from=build /app/pocketbase/pb_migrations /app/pb_migrations
+COPY --from=build /app/pocketbase/pb_hooks /app/pb_hooks
 COPY --from=build /app/build ./build
 COPY --from=build /app/package*.json ./
 COPY --from=build /app/node_modules ./node_modules
