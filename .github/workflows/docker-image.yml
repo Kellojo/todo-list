@@ -1,8 +1,8 @@
 name: Build and Publish Docker Image
 
 on:
+  workflow_dispatch:
   push:
-    workflow_dispatch:
     tags: ["v*"] # Optional: publish on version tags too
 
 jobs:
