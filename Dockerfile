@@ -36,11 +36,6 @@ COPY --from=build /app/pocketbase/pb_hooks /app/pb_hooks
 
 COPY --from=build /app/build /app/pb_public
 
-
-COPY start-pocketbase.sh /app/start-pocketbase.sh
-RUN chmod +x /app/start-pocketbase.sh
-
 EXPOSE 8090
 
-# Start PocketBase (it will serve both API and static files)
-CMD ["/app/start-pocketbase.sh"]
+CMD ["/bin/sh", "-c", "/usr/local/bin/pocketbase migrate up --dir=/app/pb_data --migrationsDir=/app/pb_migrations && exec /usr/local/bin/pocketbase serve --http=0.0.0.0:8090 --dir=/app/pb_data --publicDir=/app/pb_public --encryptionEnv=PB_ENCRYPTION_KEY"]

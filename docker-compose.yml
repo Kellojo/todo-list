@@ -8,9 +8,7 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - pb_data:/app/pb_data # Persist PocketBase data
-    environment:
-      - NODE_ENV=production
+      - pb_data:/app/pb_data
     restart: unless-stopped
 
 volumes:

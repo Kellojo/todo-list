@@ -2,10 +2,7 @@ services:
   todo-list:
     image: ghcr.io/kellojo/todo-list:latest
     ports:
-      - "3000:3000" # SvelteKit
-      - "8090:8090" # PocketBase
-    environment:
-      - NODE_ENV=production
+      - "8090:8090"
     restart: unless-stopped
     volumes:
-      - ./pb_data:/app/pb_data # Persist PocketBase data
+      - ./pb_data:/app/pb_data
