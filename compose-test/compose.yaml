@@ -1,8 +1,0 @@
-services:
-  todo-list:
-    image: ghcr.io/kellojo/todo-list:latest
-    ports:
-      - "8090:8090"
-    restart: unless-stopped
-    volumes:
-      - ./pb_data:/app/pb_data
