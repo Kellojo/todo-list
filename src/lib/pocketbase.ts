@@ -1,11 +1,15 @@
 import { goto } from "$app/navigation";
 import PocketBase, { type RecordModel } from "pocketbase";
+import { dev } from "$app/environment";
 
 // Get PocketBase URL from environment or use default
-const PB_URL = import.meta.env.PUBLIC_POCKETBASE_URL || "http://localhost:8090";
+// In production (Docker), PocketBase serves the app and its API
+// In development, PocketBase runs on localhost:8090
+const pocketBaseDevUrl = "http://localhost:8090";
+const pocketBaseUrl = dev ? pocketBaseDevUrl : window.location.origin;
 
 // Create PocketBase instance
-export const pb = new PocketBase(PB_URL);
+export const pb = new PocketBase(pocketBaseUrl);
 
 // Store for current user
 export function getCurrentUser(): UserRecord | null {
@@ -34,7 +38,7 @@ export const logout = () => {
 };
 
 export function getAdminPanelUrl(): string {
-  return `${PB_URL}/_`;
+  return `${pocketBaseUrl}/_`;
 }
 
 export interface UserRecord extends RecordModel {

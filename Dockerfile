@@ -3,7 +3,6 @@ FROM node:25-alpine AS build
 
 WORKDIR /app
 
-# Copy package files
 COPY package*.json ./
 
 # Install dependencies
@@ -16,44 +15,32 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:25-alpine AS runtime
+FROM alpine:latest AS runtime
 
 WORKDIR /app
 
-# Install supervisor to manage multiple processes
-RUN apk add --no-cache supervisor wget unzip
-
-# Create supervisor log directory
-RUN mkdir -p /var/log/supervisor /var/run
+# Install wget and unzip for PocketBase
+RUN apk add --no-cache wget unzip
 
 # Download PocketBase
-ARG POCKETBASE_VERSION=0.23.6
+ARG POCKETBASE_VERSION=0.36.2
 RUN wget https://github.com/pocketbase/pocketbase/releases/download/v${POCKETBASE_VERSION}/pocketbase_${POCKETBASE_VERSION}_linux_amd64.zip \
     && unzip pocketbase_${POCKETBASE_VERSION}_linux_amd64.zip -d /usr/local/bin/ \
     && rm pocketbase_${POCKETBASE_VERSION}_linux_amd64.zip \
     && chmod +x /usr/local/bin/pocketbase
 
-# Create PocketBase data directory
-RUN mkdir -p /app/pb_data
-RUN mkdir -p /app/pb_migrations
-RUN mkdir -p /app/pb_hooks
-
-# Copy built SvelteKit app
+# Create PocketBase directories
+RUN mkdir -p /app/pb_data /app/pb_migrations /app/pb_hooks /app/pb_public
 COPY --from=build /app/pocketbase/pb_migrations /app/pb_migrations
 COPY --from=build /app/pocketbase/pb_hooks /app/pb_hooks
-COPY --from=build /app/build ./build
-COPY --from=build /app/package*.json ./
-COPY --from=build /app/node_modules ./node_modules
 
-# Copy PocketBase startup script
+COPY --from=build /app/build /app/pb_public
+
+
 COPY start-pocketbase.sh /app/start-pocketbase.sh
 RUN chmod +x /app/start-pocketbase.sh
 
-# Copy supervisor configuration
-COPY supervisord.conf /etc/supervisord.conf
+EXPOSE 8090
 
-# Expose ports (SvelteKit on 3000, PocketBase on 8090)
-EXPOSE 3000 8090
-
-# Start supervisor to run both services
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+# Start PocketBase (it will serve both API and static files)
+CMD ["/app/start-pocketbase.sh"]
