@@ -13,6 +13,7 @@
   import Input from "$lib/controls/Input.svelte";
   import ListDrawer from "$lib/controls/ListDrawer.svelte";
   import { goto } from "$app/navigation";
+  import { draw } from "svelte/transition";
 
   let loading = $state(true);
   let currentList: TodoListRecord | null = $state(null);
@@ -88,7 +89,7 @@
 
 {#if !loading}
   <main>
-    <div class="main-page">
+    <div class="main-page" class:drawer-open={drawerOpen}>
       <nav>
         <div
           class="title-section"
@@ -158,6 +159,12 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    opacity: 1;
+    transition: opacity 0.2s;
+  }
+
+  .drawer-open {
+    opacity: 0.5;
   }
 
   nav {
