@@ -14,7 +14,7 @@
   }: {
     text: string;
     width?: string;
-    appearance?: "default" | "error";
+    appearance?: "default" | "error" | "primary" | "secondary";
     type?: "button" | "submit" | "reset" | null | undefined;
     textAlign?: "start" | "center" | "end";
     disabled?: boolean;
@@ -22,6 +22,10 @@
     selected?: boolean;
     press?: () => void;
   } = $props();
+
+  function handleClick() {
+    press();
+  }
 </script>
 
 <button
@@ -30,7 +34,7 @@
   class={appearance}
   class:selected
   {disabled}
-  onclick={() => press()}
+  onclick={handleClick}
 >
   {#if icon}
     <Icon {icon} />
@@ -43,7 +47,7 @@
   button {
     padding: 0.75rem 1.5rem;
     background-color: var(--backgroundLight);
-    color: var(--buttonText);
+    color: var(--primaryText);
     border: 1px solid var(--borderColor);
     border-radius: 0.75rem;
     cursor: pointer;
@@ -85,7 +89,7 @@
   }
 
   .primary {
-    background-color: var(--primaryColor);
-    color: var(--primaryTextColor);
+    background-color: var(--buttonPrimaryBackground);
+    color: var(--buttonPrimaryTextColor);
   }
 </style>

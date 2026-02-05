@@ -8,6 +8,7 @@
   import { onDestroy, onMount, unmount } from "svelte";
   import Button from "./Button.svelte";
   import { pb } from "$lib/pocketbase";
+  import TodoListNameDialog from "./TodoListNameDialog.svelte";
 
   let lists: TodoListRecord[] = $state([]);
   let {
@@ -15,6 +16,9 @@
     listSelected,
     selectedListId = $bindable<string | null>(null),
   } = $props();
+
+  let newListName = $state("");
+  let todoListNameDialogOpen = $state(false);
 
   onMount(async () => {
     try {
@@ -48,13 +52,17 @@
     open = false;
   }
 
-  async function onCreateList() {
+  function onCreateList() {
+    newListName = "";
+    todoListNameDialogOpen = true;
+  }
+
+  async function onListNameSubmit(name: string) {
+    console.log("Creating list with name:", name);
     try {
-      const list = await createTodoList("New List");
-      //lists = [...lists, list];
+      await createTodoList(name);
     } catch (error) {
-      console.error("Error creating new list:", error);
-      return;
+      console.error("Failed to create todo list:", error);
     }
   }
 </script>
@@ -83,6 +91,12 @@
     textAlign="start"
   />
 </div>
+
+<TodoListNameDialog
+  bind:open={todoListNameDialogOpen}
+  bind:name={newListName}
+  onSubmit={onListNameSubmit}
+/>
 
 <style>
   .drawer {

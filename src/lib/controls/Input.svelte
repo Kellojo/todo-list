@@ -9,6 +9,8 @@
     onsubmit = undefined,
     disabled = false,
     width = undefined,
+    element = $bindable<HTMLInputElement | undefined>(undefined),
+    autocomplete = undefined,
   } = $props();
 
   function onkeydown(event: KeyboardEvent) {
@@ -20,6 +22,7 @@
 </script>
 
 <input
+  bind:this={element}
   {id}
   {placeholder}
   bind:value
@@ -29,6 +32,7 @@
   {width}
   {disabled}
   {onkeydown}
+  {autocomplete}
 />
 
 <style>
