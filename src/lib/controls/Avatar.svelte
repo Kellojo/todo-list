@@ -106,6 +106,24 @@
     box-shadow: var(--shadow-l);
     border: 1px solid var(--borderColor);
     color: var(--primaryText);
+    transition:
+      opacity 0.2s,
+      translate 0.2s,
+      overlay 0.2s allow-discrete,
+      display 0.2s allow-discrete;
+    opacity: 0;
+    translate: 0 -1rem;
+  }
+
+  .popover:popover-open {
+    opacity: 1;
+    translate: 0 0;
+  }
+  @starting-style {
+    .popover:popover-open {
+      opacity: 0;
+      translate: 0 -1rem;
+    }
   }
 
   .info {
@@ -113,6 +131,8 @@
     flex-direction: column;
     gap: 0.5rem;
     margin-bottom: 1rem;
+    border-bottom: 1px solid var(--borderColor);
+    padding-bottom: 1rem;
   }
 
   .email {

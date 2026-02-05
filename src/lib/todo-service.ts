@@ -29,7 +29,7 @@ export async function ensureUserHasTodoList(
   preferredListId: string | null = null,
 ): Promise<TodoListRecord> {
   const lists = await getTodoLists();
-  if (lists.length === 0) return await createTodoList("My First Todo List");
+  if (lists.length === 0) return await createTodoList("My Todos");
 
   if (preferredListId) {
     const preferredList = lists.find((list) => list.id === preferredListId);

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ensureAuthenticated, pb } from "$lib/pocketbase";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import Avatar from "$lib/controls/Avatar.svelte";
   import {
     createTodo,
@@ -27,6 +27,10 @@
     await setList(listId);
 
     loading = false;
+  });
+
+  onDestroy(() => {
+    pb.collection("todos").unsubscribe();
   });
 
   async function onCreateNewTodo(event: Event) {

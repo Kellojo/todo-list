@@ -5,7 +5,7 @@
     type TodoListRecord,
   } from "$lib/todo-service";
   import Icon from "@iconify/svelte";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount, unmount } from "svelte";
   import Button from "./Button.svelte";
   import { pb } from "$lib/pocketbase";
 
@@ -32,6 +32,10 @@
         }
       });
     } catch (error) {}
+  });
+
+  onDestroy(() => {
+    pb.collection("todo_lists").unsubscribe();
   });
 
   function onClose() {
@@ -96,12 +100,16 @@
 
     border-right: 2px solid var(--borderColor);
     width: 250px;
-    transition: left 0.2s;
+    transition:
+      left 0.3s,
+      opacity 0.2s;
     box-shadow: var(--shadow-l);
+    opacity: 0;
   }
 
   .opened {
     left: 0;
+    opacity: 1;
   }
 
   .title {

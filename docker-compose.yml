@@ -9,6 +9,7 @@ services:
       - "8090:8090"
     volumes:
       - pb_data:/app/pb_data
+      - ./static/background.png:/app/pb_public/_app/immutable/assets/background.png:ro
     restart: unless-stopped
 
 volumes:
