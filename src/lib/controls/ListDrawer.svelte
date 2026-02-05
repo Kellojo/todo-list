@@ -42,8 +42,9 @@
     open = false;
   }
 
-  function onSelectList(list: TodoListRecord) {
+  async function onSelectList(list: TodoListRecord) {
     listSelected?.(list);
+    await new Promise((resolve) => setTimeout(resolve, 100));
     open = false;
   }
 
