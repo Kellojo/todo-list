@@ -113,6 +113,7 @@
       display 0.2s allow-discrete;
     opacity: 0;
     translate: 0 -1rem;
+    overflow: hidden;
   }
 
   .popover:popover-open {
@@ -137,6 +138,7 @@
 
   .email {
     font-weight: bold;
+    word-break: break-all;
   }
 
   .created {
