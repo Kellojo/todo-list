@@ -10,16 +10,18 @@
     disabled = false,
     icon = "",
     selected = $bindable<boolean>(false),
+    flexGrow = false,
     press = () => {},
   }: {
-    text: string;
+    text?: string;
     width?: string;
-    appearance?: "default" | "error" | "primary" | "secondary";
+    appearance?: "default" | "error" | "primary" | "secondary" | "transparent";
     type?: "button" | "submit" | "reset" | null | undefined;
     textAlign?: "start" | "center" | "end";
     disabled?: boolean;
     icon?: string;
     selected?: boolean;
+    flexGrow?: boolean;
     press?: () => void;
   } = $props();
 
@@ -30,7 +32,9 @@
 
 <button
   {type}
-  style="width: {width}; justify-content: {textAlign}"
+  style="width: {width}; justify-content: {textAlign}; 
+  flex-grow: {flexGrow ? 1 : 0};"
+  class:iconOnly={!text}
   class={appearance}
   class:selected
   {disabled}
@@ -62,10 +66,18 @@
     gap: 0.5rem;
   }
 
+  button.iconOnly {
+    padding: 0.75rem;
+    justify-content: center;
+  }
+
   button:hover {
     background-color: var(--buttonHoverBackground);
     color: var(--buttonHoverTextColor);
     box-shadow: var(--shadow-l);
+  }
+  button:focus {
+    border: 1px solid var(--buttonFocusBorderColor);
   }
 
   button:active {
@@ -76,6 +88,11 @@
   button:focus-visible {
     outline: 2px dashed var(--buttonText);
     outline-offset: 2px;
+  }
+
+  :global(.iconify) {
+    height: 1rem;
+    width: 1rem;
   }
 
   .selected {
@@ -91,5 +108,17 @@
   .primary {
     background-color: var(--buttonPrimaryBackground);
     color: var(--buttonPrimaryTextColor);
+  }
+
+  button.transparent {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  button.transparent:hover {
+    background-color: var(--buttonHoverBackground);
+    color: var(--buttonHoverTextColor);
+    box-shadow: var(--shadow-s);
   }
 </style>

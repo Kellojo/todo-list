@@ -13,13 +13,13 @@
   import Input from "$lib/controls/Input.svelte";
   import ListDrawer from "$lib/controls/ListDrawer.svelte";
   import { goto } from "$app/navigation";
-  import { draw } from "svelte/transition";
 
   let loading = $state(true);
   let currentList: TodoListRecord | null = $state(null);
   let todoItems: RecordModel[] = $state([]);
   let subtitle: string = $derived.by(() => formatSubtitle(todoItems));
   let drawerOpen = $state(false);
+  let listDrawerElement: ListDrawer | null = $state(null);
 
   onMount(async () => {
     await ensureAuthenticated();
@@ -67,6 +67,9 @@
 
   function toggleDrawer() {
     drawerOpen = !drawerOpen;
+    if (drawerOpen) {
+      listDrawerElement?.focus?.();
+    }
   }
 
   async function onListSelected(list: TodoListRecord) {
@@ -94,7 +97,11 @@
         <div
           class="title-section"
           onclick={toggleDrawer}
-          onkeydown={toggleDrawer}
+          onkeydown={(evt) => {
+            if (evt.key === "Enter" || evt.key === " ") {
+              toggleDrawer();
+            }
+          }}
           role="button"
           tabindex="0"
         >
@@ -126,6 +133,7 @@
       />
     </div>
     <ListDrawer
+      bind:this={listDrawerElement}
       bind:open={drawerOpen}
       listSelected={onListSelected}
       selectedListId={currentList?.id}

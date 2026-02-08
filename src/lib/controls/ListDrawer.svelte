@@ -2,10 +2,11 @@
   import {
     createTodoList,
     getTodoLists,
+    updateTodoList,
+    deleteTodoList,
     type TodoListRecord,
   } from "$lib/todo-service";
-  import Icon from "@iconify/svelte";
-  import { onDestroy, onMount, unmount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import Button from "./Button.svelte";
   import { pb } from "$lib/pocketbase";
   import TodoListNameDialog from "./TodoListNameDialog.svelte";
@@ -19,6 +20,7 @@
 
   let newListName = $state("");
   let todoListNameDialogOpen = $state(false);
+  let editingListId: string | null = null;
 
   onMount(async () => {
     try {
@@ -42,6 +44,12 @@
     pb.collection("todo_lists").unsubscribe();
   });
 
+  let drawerElement: HTMLDivElement | null = null;
+
+  export function focus() {
+    drawerElement?.focus();
+  }
+
   function onClose() {
     open = false;
   }
@@ -58,30 +66,70 @@
   }
 
   async function onListNameSubmit(name: string) {
-    console.log("Creating list with name:", name);
     try {
-      await createTodoList(name);
+      if (editingListId) {
+        await updateTodoList(editingListId, name);
+        editingListId = null;
+      } else {
+        await createTodoList(name);
+      }
     } catch (error) {
-      console.error("Failed to create todo list:", error);
+      console.error("Failed to save todo list:", error);
+    } finally {
+      todoListNameDialogOpen = false;
+    }
+  }
+
+  async function onEditList(list: TodoListRecord) {
+    editingListId = list.id;
+    newListName = list.title;
+    todoListNameDialogOpen = true;
+  }
+
+  async function onDeleteList(list: TodoListRecord) {
+    try {
+      if (!confirm(`Delete list "${list.title}"?`)) return;
+
+      await deleteTodoList(list.id);
+    } catch (error) {
+      console.error("Failed to delete todo list:", error);
     }
   }
 </script>
 
-<div class="drawer" class:opened={open}>
+<div class="drawer" class:opened={open} tabindex="-1" bind:this={drawerElement}>
   <h1 class="title">
     Lists
-    <div role="button" tabindex="0" onclick={onClose} onkeydown={onClose}>
-      <Icon icon="material-symbols:close-rounded" />
-    </div>
+    <Button
+      icon="material-symbols:close-rounded"
+      press={onClose}
+      appearance="transparent"
+    />
   </h1>
 
   {#each lists as list}
-    <Button
-      text={list.title}
-      press={() => onSelectList(list)}
-      selected={list.id === selectedListId}
-      textAlign="start"
-    />
+    <div class="list-row">
+      <Button
+        text={list.title}
+        press={() => onSelectList(list)}
+        selected={list.id === selectedListId}
+        textAlign="start"
+        flexGrow={true}
+      />
+
+      <div class="row-actions">
+        <Button
+          icon="material-symbols:edit-outline"
+          press={() => onEditList(list)}
+          appearance="default"
+        />
+        <Button
+          icon="material-symbols:delete-outline"
+          press={() => onDeleteList(list)}
+          appearance="error"
+        />
+      </div>
+    </div>
   {/each}
 
   <Button
@@ -102,7 +150,7 @@
   .drawer {
     position: absolute;
     top: 0;
-    left: -316px;
+    left: -414px;
     bottom: 0;
 
     display: flex;
@@ -114,7 +162,7 @@
     border-radius: 1.5rem 0 0 1.5rem;
 
     border-right: 2px solid var(--borderColor);
-    width: 250px;
+    width: 350px;
     transition:
       left 0.3s,
       opacity 0.2s;
@@ -136,5 +184,34 @@
 
     gap: 0.5rem;
     margin: 0;
+  }
+
+  .list-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow: hidden;
+    transition: gap 0.2s;
+
+    :global(.button) {
+      flex-grow: 1;
+    }
+  }
+
+  .list-row:hover,
+  .list-row:focus-within {
+    gap: 0.5rem;
+
+    .row-actions {
+      width: 88px;
+    }
+  }
+
+  .row-actions {
+    width: 0;
+    gap: 0.25rem;
+    transition: width 0.2s;
+    margin-left: auto;
+    display: flex;
   }
 </style>

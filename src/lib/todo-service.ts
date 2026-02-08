@@ -25,6 +25,22 @@ export async function createTodoList(title: string): Promise<TodoListRecord> {
   });
 }
 
+export async function updateTodoList(
+  listId: string,
+  title: string,
+): Promise<TodoListRecord> {
+  return pb.collection("todo_lists").update(listId, { title });
+}
+
+export async function deleteTodoList(listId: string): Promise<void> {
+  const todos = await getTodosForList(listId);
+  if (todos.length > 0)
+    throw new Error(
+      `This list has ${todos.length} todos. Please delete them first before deleting the list.`,
+    );
+  await pb.collection("todo_lists").delete(listId);
+}
+
 export async function ensureUserHasTodoList(
   preferredListId: string | null = null,
 ): Promise<TodoListRecord> {
