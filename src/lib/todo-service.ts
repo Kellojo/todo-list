@@ -1,5 +1,6 @@
 import type { RecordModel } from "pocketbase";
 import { pb, getCurrentUser } from "./pocketbase";
+import { toast } from "svelte-sonner";
 
 export async function hasAnyTodoLists(): Promise<boolean> {
   try {
@@ -34,10 +35,13 @@ export async function updateTodoList(
 
 export async function deleteTodoList(listId: string): Promise<void> {
   const todos = await getTodosForList(listId);
-  if (todos.length > 0)
-    throw new Error(
-      `This list has ${todos.length} todos. Please delete them first before deleting the list.`,
+  if (todos.length > 0) {
+    toast.error(
+      `There are still ${todos.length} todos in this list. Please delete them before deleting the list.`,
     );
+    return;
+  }
+
   await pb.collection("todo_lists").delete(listId);
 }
 

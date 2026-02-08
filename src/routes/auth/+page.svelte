@@ -5,11 +5,11 @@
   import MainContent from "$lib/controls/MainContent.svelte";
   import Button from "$lib/controls/Button.svelte";
   import Input from "$lib/controls/Input.svelte";
+  import { toast } from "svelte-sonner";
 
-  let email = $state("");
+let email = $state("");
   let password = $state("");
   let passwordConfirm = $state("");
-  let error = $state("");
   let loading = $state(false);
   let isLogin = $state(true);
 
@@ -17,45 +17,43 @@
     ensureNotAuthenticated();
   });
 
-  async function handleLogin() {
+async function handleLogin() {
     if (loading) return;
     if (!email || !password) {
-      error = "Please fill in all fields";
+      toast.error("Please fill in all fields");
       return;
     }
 
     loading = true;
-    error = "";
 
     try {
       await pb.collection("users").authWithPassword(email, password);
       goto("/dashboard");
     } catch (err: any) {
       console.error("Login error:", err);
-      error = err.message || "Failed to login. Please check your credentials.";
+      toast.error(err.message || "Failed to login. Please check your credentials.");
     } finally {
       loading = false;
     }
   }
 
-  async function handleRegister() {
+async function handleRegister() {
     if (!email || !password || !passwordConfirm) {
-      error = "Please fill in all fields";
+      toast.error("Please fill in all fields");
       return;
     }
 
     if (password !== passwordConfirm) {
-      error = "Passwords do not match";
+      toast.error("Passwords do not match");
       return;
     }
 
     if (password.length < 8) {
-      error = "Password must be at least 8 characters long";
+      toast.error("Password must be at least 8 characters long");
       return;
     }
 
     loading = true;
-    error = "";
 
     try {
       // Create the user
@@ -72,19 +70,17 @@
       goto("/dashboard");
     } catch (err: any) {
       console.error("Registration error:", err);
-      error = err.message || "Failed to register. Please try again.";
+      toast.error(err.message || "Failed to register. Please try again.");
     } finally {
       loading = false;
     }
   }
 
-  function switchToRegister() {
+function switchToRegister() {
     isLogin = false;
-    error = "";
   }
   function switchToLogin() {
     isLogin = true;
-    error = "";
   }
 </script>
 
@@ -145,7 +141,7 @@
       />
     </form>
 
-    {#if isLogin}
+{#if isLogin}
       <p class="footer-text">
         Don't have an account? <a
           role="button"
@@ -163,10 +159,6 @@
           onkeypress={switchToLogin}>Login here</a
         >
       </p>
-    {/if}
-
-    {#if error}
-      <div class="error">{error}</div>
     {/if}
   </div>
 {/snippet}

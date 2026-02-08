@@ -11,6 +11,11 @@ const config = {
       strict: false,
     }),
   },
+  vite: {
+    ssr: {
+      noExternal: ["svelte-sonner"],
+    },
+  },
 };
 
 export default config;
