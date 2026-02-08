@@ -18,6 +18,13 @@
     const itemCopy: TodoRecord = { ...item };
     itemCopy.completed = (event.target as HTMLInputElement).checked;
     completed = itemCopy.completed;
+
+    if (itemCopy.completed) {
+      itemCopy.completedAt = new Date().toISOString();
+    } else {
+      itemCopy.completedAt = null;
+    }
+
     updateTodo(itemCopy);
     onUpdated?.(itemCopy);
   }

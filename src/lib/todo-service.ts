@@ -93,4 +93,5 @@ export interface TodoRecord extends RecordModel {
   title: string;
   completed: boolean;
   list: string;
+  completedAt?: string | null;
 }
