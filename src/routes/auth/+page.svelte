@@ -4,7 +4,6 @@
     listOAuthMethods,
     loginWithEmail,
     loginWithOAuth,
-    pb,
     registerWithEmail,
   } from "$lib/pocketbase";
   import { goto } from "$app/navigation";
