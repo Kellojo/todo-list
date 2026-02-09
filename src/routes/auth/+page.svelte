@@ -1,23 +1,40 @@
 <script lang="ts">
-  import { ensureNotAuthenticated, pb } from "$lib/pocketbase";
+  import {
+    ensureNotAuthenticated,
+    listOAuthMethods,
+    loginWithEmail,
+    loginWithOAuth,
+    pb,
+    registerWithEmail,
+  } from "$lib/pocketbase";
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import MainContent from "$lib/controls/MainContent.svelte";
   import Button from "$lib/controls/Button.svelte";
   import Input from "$lib/controls/Input.svelte";
   import { toast } from "svelte-sonner";
+  import type { AuthProviderInfo } from "pocketbase";
 
-let email = $state("");
+  let email = $state("");
   let password = $state("");
   let passwordConfirm = $state("");
   let loading = $state(false);
   let isLogin = $state(true);
 
-  onMount(() => {
+  let oAuthProviders: AuthProviderInfo[] = $state([]);
+
+  onMount(async () => {
     ensureNotAuthenticated();
+
+    try {
+      const providers = await listOAuthMethods();
+      oAuthProviders = providers;
+    } catch (err) {
+      console.error("Failed to fetch auth providers:", err);
+    }
   });
 
-async function handleLogin() {
+  async function onLogin() {
     if (loading) return;
     if (!email || !password) {
       toast.error("Please fill in all fields");
@@ -27,46 +44,24 @@ async function handleLogin() {
     loading = true;
 
     try {
-      await pb.collection("users").authWithPassword(email, password);
+      await loginWithEmail(email, password);
       goto("/dashboard");
     } catch (err: any) {
       console.error("Login error:", err);
-      toast.error(err.message || "Failed to login. Please check your credentials.");
+      toast.error(
+        err.message || "Failed to login. Please check your credentials.",
+      );
     } finally {
       loading = false;
     }
   }
 
-async function handleRegister() {
-    if (!email || !password || !passwordConfirm) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-
-    if (password !== passwordConfirm) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
-    if (password.length < 8) {
-      toast.error("Password must be at least 8 characters long");
-      return;
-    }
-
+  async function onRegister() {
     loading = true;
 
     try {
       // Create the user
-      await pb.collection("users").create({
-        email,
-        password,
-        passwordConfirm,
-        emailVisibility: true,
-      });
-
-      // Automatically log them in
-      await pb.collection("users").authWithPassword(email, password);
-
+      await registerWithEmail(email, password, passwordConfirm);
       goto("/dashboard");
     } catch (err: any) {
       console.error("Registration error:", err);
@@ -76,7 +71,18 @@ async function handleRegister() {
     }
   }
 
-function switchToRegister() {
+  async function onLoginWithOAuth(provider: AuthProviderInfo) {
+    try {
+      const result = await loginWithOAuth(provider.name);
+      console.log(result);
+      goto("/dashboard");
+    } catch (err) {
+      console.error("OAuth login error:", err);
+      toast.error("Failed to initiate OAuth login. Please try again.");
+    }
+  }
+
+  function switchToRegister() {
     isLogin = false;
   }
   function switchToLogin() {
@@ -92,7 +98,7 @@ function switchToRegister() {
       onsubmit={(e) => {
         e.preventDefault();
 
-        isLogin ? handleLogin() : handleRegister();
+        isLogin ? onLogin() : onRegister();
       }}
     >
       <div class="form-group">
@@ -141,7 +147,7 @@ function switchToRegister() {
       />
     </form>
 
-{#if isLogin}
+    {#if isLogin}
       <p class="footer-text">
         Don't have an account? <a
           role="button"
@@ -159,6 +165,24 @@ function switchToRegister() {
           onkeypress={switchToLogin}>Login here</a
         >
       </p>
+    {/if}
+  </div>
+
+  <div>
+    {#if oAuthProviders.length > 0}
+      <h2 style="text-align: center; margin: 2rem 0 1rem 0;">
+        Or continue with
+      </h2>
+      <div class="oAuth-buttons">
+        {#each oAuthProviders as provider}
+          <Button
+            icon="material-symbols:login-rounded"
+            flexGrow={true}
+            text={provider.displayName}
+            press={() => onLoginWithOAuth(provider)}
+          />
+        {/each}
+      </div>
     {/if}
   </div>
 {/snippet}
@@ -186,19 +210,6 @@ function switchToRegister() {
     font-weight: 500;
   }
 
-  .error {
-    color: var(--error);
-    border-radius: 6px;
-    margin: 2rem;
-    font-size: 1rem;
-    text-shadow: var(--backgroundTextContrastShadow);
-    position: absolute;
-    bottom: -5rem;
-    left: 0;
-    right: 0;
-    text-align: center;
-  }
-
   .footer-text {
     text-align: center;
     margin: 1.5rem 0 0 0;
@@ -214,5 +225,12 @@ function switchToRegister() {
 
   .footer-text a:hover {
     text-decoration: underline;
+  }
+
+  .oAuth-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 </style>
