@@ -5,6 +5,7 @@
   let {
     open = $bindable<boolean>(false),
     name = $bindable<string>(""),
+    submitText = $bindable<string>("Create"),
     onSubmit,
   } = $props();
 
@@ -72,7 +73,7 @@
         appearance="default"
         press={() => (open = false)}
       />
-      <Button type="submit" text="Create" appearance="primary" />
+      <Button type="submit" text={submitText} appearance="primary" />
     </div>
   </form>
 </dialog>

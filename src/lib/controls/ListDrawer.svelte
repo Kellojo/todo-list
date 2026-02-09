@@ -19,6 +19,7 @@
   } = $props();
 
   let newListName = $state("");
+  let todoListNameDialogAction: "Create" | "Save" = $state("Create");
   let todoListNameDialogOpen = $state(false);
   let editingListId: string | null = null;
 
@@ -62,6 +63,7 @@
 
   function onCreateList() {
     newListName = "";
+    todoListNameDialogAction = "Create";
     todoListNameDialogOpen = true;
   }
 
@@ -83,6 +85,7 @@
   async function onEditList(list: TodoListRecord) {
     editingListId = list.id;
     newListName = list.title;
+    todoListNameDialogAction = "Save";
     todoListNameDialogOpen = true;
   }
 
@@ -144,6 +147,7 @@
   bind:open={todoListNameDialogOpen}
   bind:name={newListName}
   onSubmit={onListNameSubmit}
+  submitText={todoListNameDialogAction}
 />
 
 <style>
