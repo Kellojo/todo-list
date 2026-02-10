@@ -29,6 +29,7 @@
 
     try {
       const authMethods = await getEnabledAuthMethods();
+      console.log("Enabled auth methods:", authMethods);
       isPasswordAuthEnabled = authMethods.emailPassword;
       oAuthProviders = authMethods.oauthProviders;
     } catch (err) {
