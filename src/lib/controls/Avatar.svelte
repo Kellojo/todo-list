@@ -93,7 +93,7 @@
   }
 
   .popover {
-    width: 250px;
+    width: 300px;
     top: anchor(bottom);
     left: anchor(right);
     margin: 0;
