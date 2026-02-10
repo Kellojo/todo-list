@@ -7,7 +7,10 @@
   } = $props();
 </script>
 
-<main class:fit-height={fitHeight} style="max-width: {maxWidth}; opacity: {opacity};">
+<main
+  class:fit-height={fitHeight}
+  style="max-width: {maxWidth}; opacity: {opacity};"
+>
   {@render content()}
 </main>
 
@@ -16,6 +19,7 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    overflow: hidden;
 
     padding: 2rem;
     margin: 2rem auto;
@@ -38,15 +42,15 @@
     min-height: auto;
   }
 
-    @media (max-width: 768px) {
-        main {
-            margin-left: 0;
-            margin-right: 0;
-            margin-top: 0;
-            border: none;
-            border-radius: 0;
-            max-width: 100% !important;
-            min-height: calc(100vh - 2rem);
-        }
+  @media (max-width: 768px) {
+    main {
+      margin-left: 0;
+      margin-right: 0;
+      margin-top: 0;
+      border: none;
+      border-radius: 0;
+      max-width: 100% !important;
+      min-height: calc(100vh - 2rem);
     }
+  }
 </style>

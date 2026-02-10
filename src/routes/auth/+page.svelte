@@ -178,7 +178,7 @@
   <div>
     {#if oAuthProviders.length > 0}
       <h2
-        style="text-align: center; margin: 2rem 0 1rem 0;"
+        style="text-align: center; margin: 4rem 0 1rem 0;"
         style:display={isPasswordAuthEnabled ? "block" : "none"}
       >
         Or continue with
