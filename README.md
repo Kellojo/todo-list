@@ -12,9 +12,11 @@ A small todo list application built with SvelteKit and PocketBase, designed for 
 - 👥 Multi-user support with separate todo lists for each user
 - 🐳 Single container deployment with Docker
 
+Technologies used:
+
 - **Frontend**: SvelteKit with TypeScript
 - **Backend**: PocketBase (SQLite-based backend with REST API)
-- **Deployment**: Docker support with both services in a single container
+- **Deployment**: Docker container including both frontend and backend exposing a single port (8090)
 
 ## Setup and Installation
 
