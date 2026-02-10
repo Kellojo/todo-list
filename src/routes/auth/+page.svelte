@@ -1,6 +1,7 @@
 <script lang="ts">
   import {
     ensureNotAuthenticated,
+    isEmailPasswordAuthEnabled,
     listOAuthMethods,
     loginWithEmail,
     loginWithOAuth,
@@ -19,6 +20,7 @@
   let passwordConfirm = $state("");
   let loading = $state(false);
   let isLogin = $state(true);
+  let isPasswordAuthEnabled = $state(true);
 
   let oAuthProviders: AuthProviderInfo[] = $state([]);
 
@@ -26,11 +28,14 @@
     ensureNotAuthenticated();
 
     try {
-      const providers = await listOAuthMethods();
-      oAuthProviders = providers;
+      isPasswordAuthEnabled = await isEmailPasswordAuthEnabled();
+      oAuthProviders = await listOAuthMethods();
     } catch (err) {
-      console.error("Failed to fetch auth providers:", err);
+      console.error("Failed to check auth methods:", err);
     }
+
+    try {
+    } catch (err) {}
   });
 
   async function onLogin() {
@@ -93,83 +98,88 @@
   <div class="container">
     <h1>{isLogin ? "Login" : "Sign Up"}</h1>
 
-    <form
-      onsubmit={(e) => {
-        e.preventDefault();
+    {#if isPasswordAuthEnabled}
+      <form
+        onsubmit={(e) => {
+          e.preventDefault();
 
-        isLogin ? onLogin() : onRegister();
-      }}
-    >
-      <div class="form-group">
-        <label for="email">Email</label>
-        <Input
-          id="email"
-          type="email"
-          bind:value={email}
-          placeholder="your@email.com"
-          required
-          disabled={loading}
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="password">Password</label>
-        <Input
-          id="password"
-          type="password"
-          bind:value={password}
-          placeholder="••••••••"
-          required
-          disabled={loading}
-        />
-      </div>
-
-      {#if !isLogin}
+          isLogin ? onLogin() : onRegister();
+        }}
+      >
         <div class="form-group">
-          <label for="passwordConfirm">Confirm Password</label>
+          <label for="email">Email</label>
           <Input
-            id="passwordConfirm"
+            id="email"
+            type="email"
+            bind:value={email}
+            placeholder="your@email.com"
+            required
+            disabled={loading}
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <Input
+            id="password"
             type="password"
-            bind:value={passwordConfirm}
+            bind:value={password}
             placeholder="••••••••"
             required
             disabled={loading}
           />
         </div>
+
+        {#if !isLogin}
+          <div class="form-group">
+            <label for="passwordConfirm">Confirm Password</label>
+            <Input
+              id="passwordConfirm"
+              type="password"
+              bind:value={passwordConfirm}
+              placeholder="••••••••"
+              required
+              disabled={loading}
+            />
+          </div>
+        {/if}
+
+        <Button
+          width="100%"
+          type="submit"
+          icon="material-symbols:login-rounded"
+          text={isLogin ? "Login" : "Sign Up"}
+        />
+      </form>
+
+      {#if isLogin}
+        <p class="footer-text">
+          Don't have an account? <a
+            role="button"
+            href="/auth"
+            onclick={switchToRegister}
+            onkeypress={switchToRegister}>Sign Up here</a
+          >
+        </p>
+      {:else}
+        <p class="footer-text">
+          Already have an account? <a
+            role="button"
+            href="/auth"
+            onclick={switchToLogin}
+            onkeypress={switchToLogin}>Login here</a
+          >
+        </p>
       {/if}
-
-      <Button
-        width="100%"
-        type="submit"
-        icon="material-symbols:login-rounded"
-        text={isLogin ? "Login" : "Sign Up"}
-      />
-    </form>
-
-    {#if isLogin}
-      <p class="footer-text">
-        Don't have an account? <a
-          role="button"
-          href="/auth"
-          onclick={switchToRegister}
-          onkeypress={switchToRegister}>Sign Up here</a
-        >
-      </p>
-    {:else}
-      <p class="footer-text">
-        Already have an account? <a
-          role="button"
-          href="/auth"
-          onclick={switchToLogin}
-          onkeypress={switchToLogin}>Login here</a
-        >
-      </p>
     {/if}
   </div>
 
   <div>
     {#if oAuthProviders.length > 0}
-      <h2 style="text-align: center; margin: 2rem 0 1rem 0;">
+      <h2
+        style="text-align: center; margin: 2rem 0 1rem 0;"
+        style:display={isPasswordAuthEnabled ? "block" : "none"}
+      >
         Or continue with
       </h2>
       <div class="oAuth-buttons">

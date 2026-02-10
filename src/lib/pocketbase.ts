@@ -89,6 +89,11 @@ export async function loginWithOAuth(provider: string) {
   });
 }
 
+export async function isEmailPasswordAuthEnabled(): Promise<boolean> {
+  const authMethods = await listAuthMethods();
+  return authMethods.password.enabled;
+}
+
 export function getAdminPanelUrl(): string {
   return `${pocketBaseUrl}/_`;
 }
