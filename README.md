@@ -47,7 +47,7 @@ services:
 
 To enable OIDC/OAuth providers, you need to configure them in PocketBase:
 
-1. Open the PocketBase admin interface at `http://localhost:8090/_/` and navigate to "Collections" > "Users" > "Edit Collection".
+1. Open the PocketBase admin interface at `http://localhost:8090/_/` and navigate to `Collections > Users > Edit Collection`.
 
 2. Navigate to the "Options" tab and enable OAuth2. Then, add your desired OAuth providers (e.g., Google, GitHub) with the appropriate client IDs and secrets.
 
@@ -57,9 +57,10 @@ To enable OIDC/OAuth providers, you need to configure them in PocketBase:
 > Make sure your users have a verified email address setup in the provider. Otherwise the login will fail.
 
 ### Disabling Email/Password Authentication
+
 If you want to disable email/password authentication and only allow OAuth/OIDC providers, you can do so in the PocketBase admin interface:
 
-1. Open the PocketBase admin interface at `http://localhost:8090/_/` and navigate to "Collections" > "Users" > "Edit Collection".
+1. Open the PocketBase admin interface at `http://localhost:8090/_/` and navigate to `Collections > Users > Edit Collection`.
 2. Navigate to the "Options" tab and disable the "Email/Password" authentication method.
 
 ## Development
