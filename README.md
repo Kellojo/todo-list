@@ -43,7 +43,7 @@ services:
 3. Run `docker compose up -d` to start the application
 4. Access the app at `http://localhost:8090`
 
-### Setting up OIDC/OAuth Providers
+## Setting up OIDC/OAuth Providers
 
 To enable OIDC/OAuth providers, you need to configure them in PocketBase:
 
@@ -56,7 +56,7 @@ To enable OIDC/OAuth providers, you need to configure them in PocketBase:
 > [!NOTE]  
 > Make sure your users have a verified email address setup in the provider. Otherwise the login will fail.
 
-### Disabling Email/Password Authentication
+## Disabling Email/Password Authentication
 
 If you want to disable email/password authentication and only allow OAuth/OIDC providers, you can do so in the PocketBase admin interface:
 
