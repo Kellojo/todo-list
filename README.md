@@ -1,16 +1,16 @@
-# Todo List App
+# Todo List
 
 A small todo list application built with SvelteKit and PocketBase, designed for easy deployment with Docker in a single container.
 
 ## Features
 
-- Maintain multiple todo lists
-- Add, edit, and delete todos
-- Real-time updates using PocketBase's real-time API
-- Responsive design for desktop and mobile
-- User authentication (email/password and OAuth/OIDC providers)
-- Multi-user support with separate todo lists for each user
-- Single container deployment with Docker
+- 🗂️ Maintain multiple todo lists
+- ✏️ Add, edit, and delete todos
+- ⚡ Real-time updates using PocketBase's real-time API
+- 📱 Responsive design for desktop and mobile
+- 🔐 User authentication (email/password and OAuth/OIDC providers)
+- 👥 Multi-user support with separate todo lists for each user
+- 🐳 Single container deployment with Docker
 
 - **Frontend**: SvelteKit with TypeScript
 - **Backend**: PocketBase (SQLite-based backend with REST API)
