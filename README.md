@@ -1,6 +1,6 @@
 # Todo List App
 
-A simple todo list application built with SvelteKit and PocketBase, designed for easy deployment with Docker in a single container.
+A small todo list application built with SvelteKit and PocketBase, designed for easy deployment with Docker in a single container.
 
 ## Features
 
