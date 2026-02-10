@@ -45,11 +45,17 @@ export async function listAuthMethods(): Promise<AuthMethodsList> {
   return await pb.collection("users").listAuthMethods();
 }
 
-export async function listOAuthMethods(): Promise<AuthProviderInfo[]> {
+export async function getEnabledAuthMethods(): Promise<{
+  emailPassword: boolean;
+  oauthProviders: AuthProviderInfo[];
+}> {
   const authMethods = await listAuthMethods();
-  if (!authMethods.oauth2.enabled) return [];
-
-  return authMethods.oauth2.providers;
+  return {
+    emailPassword: authMethods.password.enabled,
+    oauthProviders: authMethods.oauth2.enabled
+      ? authMethods.oauth2.providers
+      : [],
+  };
 }
 
 export async function loginWithEmail(email: string, password: string) {
@@ -87,11 +93,6 @@ export async function loginWithOAuth(provider: string) {
   return pb.collection("users").authWithOAuth2({
     provider: provider,
   });
-}
-
-export async function isEmailPasswordAuthEnabled(): Promise<boolean> {
-  const authMethods = await listAuthMethods();
-  return authMethods.password.enabled;
 }
 
 export function getAdminPanelUrl(): string {

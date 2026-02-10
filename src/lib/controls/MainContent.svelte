@@ -3,15 +3,11 @@
     content,
     maxWidth = "var(--contentMaxWidth)",
     fitHeight = false,
+    opacity = 1,
   } = $props();
 </script>
 
-<main
-  style="max-width: {maxWidth}; 
-  min-height: {fitHeight ? 'auto' : 'calc(100vh - 4rem)'};
-  height: {fitHeight ? 'fit-content' : '100%'};
-  margin: {fitHeight ? 'auto' : '2rem auto'};"
->
+<main class:fit-height={fitHeight} style="max-width: {maxWidth}; opacity: {opacity};">
   {@render content()}
 </main>
 
@@ -31,5 +27,26 @@
     box-shadow: var(--shadow-l);
     border: 1px solid var(--borderColor);
     width: 100%;
+
+    height: 100%;
+    min-height: calc(100vh - 4rem);
   }
+
+  main.fit-height {
+    margin: auto;
+    height: fit-content;
+    min-height: auto;
+  }
+
+    @media (max-width: 768px) {
+        main {
+            margin-left: 0;
+            margin-right: 0;
+            margin-top: 0;
+            border: none;
+            border-radius: 0;
+            max-width: 100% !important;
+            min-height: calc(100vh - 2rem);
+        }
+    }
 </style>

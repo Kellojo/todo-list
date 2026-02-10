@@ -13,6 +13,7 @@
   import Input from "$lib/controls/Input.svelte";
   import ListDrawer from "$lib/controls/ListDrawer.svelte";
   import { goto } from "$app/navigation";
+  import MainContent from "$lib/controls/MainContent.svelte";
 
   let loading = $state(true);
   let currentList: TodoListRecord | null = $state(null);
@@ -90,8 +91,8 @@
   }
 </script>
 
-{#if !loading}
-  <main>
+{#snippet content()}
+  {#if !loading}
     <div class="main-page" class:drawer-open={drawerOpen}>
       <nav>
         <div
@@ -138,30 +139,15 @@
       listSelected={onListSelected}
       selectedListId={currentList?.id}
     />
-  </main>
-{/if}
+  {/if}
+{/snippet}
+
+<MainContent
+  maxWidth={"min(var(--contentMaxWidth), calc(100% - 2rem))"}
+  {content}
+></MainContent>
 
 <style>
-  main {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    min-height: calc(100vh - 4rem);
-    overflow: hidden;
-
-    padding: 2rem;
-    margin: 2rem auto;
-    box-sizing: border-box;
-    max-width: var(--contentMaxWidth);
-
-    border-radius: 1.5rem;
-    background: var(--background);
-    backdrop-filter: blur(1.25rem);
-    box-shadow: var(--shadow-l);
-    border: 1px solid var(--borderColor);
-    width: 100%;
-  }
-
   .main-page {
     flex-grow: 1;
     display: flex;

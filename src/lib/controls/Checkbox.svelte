@@ -14,6 +14,7 @@
     height: 1.5rem;
     cursor: pointer;
     margin: 0;
+    flex-shrink: 0;
 
     border: 2px solid var(--secondaryText);
     border-radius: 50%;

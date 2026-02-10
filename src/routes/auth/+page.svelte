@@ -1,8 +1,7 @@
 <script lang="ts">
   import {
     ensureNotAuthenticated,
-    isEmailPasswordAuthEnabled,
-    listOAuthMethods,
+    getEnabledAuthMethods,
     loginWithEmail,
     loginWithOAuth,
     registerWithEmail,
@@ -21,6 +20,7 @@
   let loading = $state(false);
   let isLogin = $state(true);
   let isPasswordAuthEnabled = $state(true);
+  let initialLoad = $state(true);
 
   let oAuthProviders: AuthProviderInfo[] = $state([]);
 
@@ -28,14 +28,14 @@
     ensureNotAuthenticated();
 
     try {
-      isPasswordAuthEnabled = await isEmailPasswordAuthEnabled();
-      oAuthProviders = await listOAuthMethods();
+      const authMethods = await getEnabledAuthMethods();
+      isPasswordAuthEnabled = authMethods.emailPassword;
+      oAuthProviders = authMethods.oauthProviders;
     } catch (err) {
       console.error("Failed to check auth methods:", err);
     }
 
-    try {
-    } catch (err) {}
+    initialLoad = false;
   });
 
   async function onLogin() {
@@ -196,7 +196,12 @@
   </div>
 {/snippet}
 
-<MainContent fitHeight={true} maxWidth="500px" {content}></MainContent>
+<MainContent
+  fitHeight={true}
+  maxWidth="500px"
+  {content}
+  opacity={initialLoad ? 0 : 1}
+></MainContent>
 
 <style>
   h1 {
