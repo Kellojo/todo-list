@@ -44,13 +44,11 @@
 
   @media (max-width: 768px) {
     main {
-      margin-left: 0;
-      margin-right: 0;
-      margin-top: 0;
+      margin: 0;
       border: none;
       border-radius: 0;
       max-width: 100% !important;
-      min-height: calc(100vh - 2rem);
+      min-height: calc(100vh);
     }
   }
 </style>
