@@ -62,7 +62,12 @@ export async function ensureUserHasTodoList(
 }
 
 export async function getTodosForList(listId: string): Promise<TodoRecord[]> {
-  return pb.collection("todos").getFullList(-1, { filter: `list="${listId}"` });
+  return pb
+    .collection("todos")
+    .getFullList(-1, {
+      filter: `list="${listId}"`,
+      sort: "completed,-created",
+    });
 }
 
 export async function createTodo(

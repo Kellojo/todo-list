@@ -7,6 +7,7 @@
     ensureUserHasTodoList,
     getTodosForList,
     type TodoListRecord,
+    type TodoRecord,
   } from "$lib/todo-service";
   import type { RecordModel } from "pocketbase";
   import Todo from "$lib/controls/Todo.svelte";
@@ -14,10 +15,12 @@
   import ListDrawer from "$lib/controls/ListDrawer.svelte";
   import { goto } from "$app/navigation";
   import MainContent from "$lib/controls/MainContent.svelte";
+  import { flip } from "svelte/animate";
+  import { send, receive } from "$lib/controls/transitions";
 
   let loading = $state(true);
   let currentList: TodoListRecord | null = $state(null);
-  let todoItems: RecordModel[] = $state([]);
+  let todoItems: TodoRecord[] = $state([]);
   let subtitle: string = $derived.by(() => formatSubtitle(todoItems));
   let drawerOpen = $state(false);
   let listDrawerElement: ListDrawer | null = $state(null);
@@ -116,22 +119,28 @@
       </nav>
 
       <div class="list">
-        {#each todoItems as item}
-          <Todo
-            {item}
-            title={item.title}
-            completed={item.completed}
-            onDeleted={onTodoDeleted}
-          />
+        <Input
+          class="create-todo"
+          placeholder="Add new todo..."
+          value={""}
+          onsubmit={onCreateNewTodo}
+        />
+
+        {#each todoItems as item (item.id)}
+          <div
+            animate:flip={{ duration: 200 }}
+            in:receive={{ key: item.id }}
+            out:send={{ key: item.id }}
+          >
+            <Todo
+              {item}
+              title={item.title}
+              completed={item.completed}
+              onDeleted={onTodoDeleted}
+            />
+          </div>
         {/each}
       </div>
-
-      <Input
-        class="create-todo"
-        placeholder="Add new todo..."
-        value={""}
-        onsubmit={onCreateNewTodo}
-      />
     </div>
     <ListDrawer
       bind:this={listDrawerElement}
@@ -155,6 +164,12 @@
     gap: 1rem;
     opacity: 1;
     transition: opacity 0.2s;
+  }
+
+  @media (max-width: 768px) {
+    .main-page {
+      margin-bottom: 4rem;
+    }
   }
 
   .drawer-open {

@@ -8,6 +8,12 @@
     completed = $bindable<boolean>(),
     onDeleted = (id: string) => {},
     onUpdated = (item: TodoRecord) => {},
+  }: {
+    item: TodoRecord;
+    title: string;
+    completed?: boolean;
+    onDeleted?: (id: string) => void;
+    onUpdated?: (item: TodoRecord) => void;
   } = $props();
 
   let titleChangeTimeout: number | undefined;
@@ -53,7 +59,6 @@
 
 <div
   class="item"
-  style="order: {completed ? 1 : 1}"
   role="button"
   tabindex="-1"
   onkeypress={(e) => {}}
