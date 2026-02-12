@@ -57,29 +57,7 @@
   }
 </script>
 
-<div
-  class="item"
-  role="button"
-  tabindex="-1"
-  onkeypress={(e) => {}}
-  onclick={() => {
-    return;
-    if (
-      document.activeElement === titleField ||
-      document.activeElement === deleteButton
-    )
-      return;
-    titleField?.focus();
-
-    // Move cursor to end
-    const range = document.createRange();
-    range.selectNodeContents(titleField!);
-    range.collapse(false);
-    const selection = window.getSelection();
-    selection?.removeAllRanges();
-    selection?.addRange(range);
-  }}
->
+<div class="item" role="button" tabindex="-1">
   <Checkbox {completed} onchange={checkedChange} />
   <span
     bind:this={titleField}
