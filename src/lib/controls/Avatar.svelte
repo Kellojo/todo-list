@@ -32,7 +32,7 @@
   {/if}
 </button>
 
-<div id="avatar-popover" anchor="avatar" popover class="popover">
+<div id="avatar-popover" popover class="popover">
   <div class="info">
     <div>{user?.name}</div>
     <div class="email">{user?.email}</div>
