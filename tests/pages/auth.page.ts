@@ -3,7 +3,7 @@ import { user } from "../data/user";
 import { sleep } from "./test-utility";
 
 export async function expectAuthPage(page: Page) {
-  await expect(page.url().includes("/auth")).toBeTruthy();
+  await expect(page).toHaveURL(/.*\/auth/);
 }
 
 export async function switchToRegister(page: Page) {

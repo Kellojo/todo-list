@@ -8,7 +8,7 @@ import {
 import { expectDashboardPage } from "./pages/dashboard.page";
 
 test("Sign Up", async ({ page }) => {
-  await page.goto("http://localhost:5173/auth");
+  await page.goto("/auth");
   await page.waitForLoadState("networkidle");
 
   await switchToRegister(page);
@@ -19,7 +19,7 @@ test("Sign Up", async ({ page }) => {
 });
 
 test("Login", async ({ page }) => {
-  await page.goto("http://localhost:5173/auth");
+  await page.goto("/auth");
   await page.waitForLoadState("networkidle");
 
   await fillLoginForm(page);
