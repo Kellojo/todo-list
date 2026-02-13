@@ -7,11 +7,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8090:8090"
+    tmpfs:
+      - /app/pb_data
     volumes:
-      - pb_data:/app/pb_data
       - ./static/background.png:/app/pb_public/_app/immutable/assets/background.png:ro
     restart: unless-stopped
-
-volumes:
-  pb_data:
-    driver: local

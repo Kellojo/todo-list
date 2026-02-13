@@ -29,7 +29,6 @@
 
     try {
       const authMethods = await getEnabledAuthMethods();
-      console.log("Enabled auth methods:", authMethods);
       isPasswordAuthEnabled = authMethods.emailPassword;
       oAuthProviders = authMethods.oauthProviders;
     } catch (err) {
@@ -40,6 +39,7 @@
   });
 
   async function onLogin() {
+    console.log("Attempting login with email:", email);
     if (loading) return;
     if (!email || !password) {
       toast.error("Please fill in all fields");
@@ -146,6 +146,7 @@
         {/if}
 
         <Button
+          id="submitLoginButton"
           width="100%"
           type="submit"
           icon="material-symbols:login-rounded"
@@ -156,6 +157,7 @@
       {#if isLogin}
         <p class="footer-text">
           Don't have an account? <a
+            data-testid="switchToRegister"
             role="button"
             href="/auth"
             onclick={switchToRegister}

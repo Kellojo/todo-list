@@ -23,6 +23,7 @@
 
 <input
   bind:this={element}
+  data-testid={id}
   {id}
   {placeholder}
   bind:value
