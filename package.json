@@ -11,7 +11,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "prepare": "svelte-kit sync || echo ''",
-    "test-e2e": "docker compose up --build -d && npx playwright test --ui && docker compose down",
+    "test-e2e": "docker compose up --build -d && npx playwright test && docker compose down",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
