@@ -16,7 +16,7 @@
     onUpdated?: (item: TodoRecord) => void;
   } = $props();
 
-  let titleChangeTimeout: number | undefined;
+  let titleChangeTimeout: NodeJS.Timeout | undefined;
   let titleField: HTMLSpanElement | null = null;
   let deleteButton: HTMLButtonElement | null = null;
 

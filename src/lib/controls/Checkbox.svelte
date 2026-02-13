@@ -1,4 +1,6 @@
 <script lang="ts">
+  import type { EventHandler } from "svelte/elements";
+
   let {
     completed = $bindable<boolean>(),
     onchange = $bindable<EventHandler>(),

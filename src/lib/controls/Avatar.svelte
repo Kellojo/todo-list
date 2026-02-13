@@ -43,7 +43,7 @@
   <Button
     text="Logout"
     appearance="error"
-    textAlign="left"
+    textAlign="start"
     width="100%"
     icon="material-symbols:logout-rounded"
     press={onLogoutPress}
