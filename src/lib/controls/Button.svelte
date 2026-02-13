@@ -11,6 +11,7 @@
     icon = "",
     selected = $bindable<boolean>(false),
     flexGrow = false,
+    id = null,
     press = () => {},
   }: {
     text?: string;
@@ -22,6 +23,7 @@
     icon?: string;
     selected?: boolean;
     flexGrow?: boolean;
+    id?: string | null;
     press?: () => void;
   } = $props();
 
@@ -32,6 +34,8 @@
 
 <button
   {type}
+  {id}
+  data-testid={id}
   style="width: {width}; justify-content: {textAlign}; 
   flex-grow: {flexGrow ? 1 : 0};"
   class:iconOnly={!text}
