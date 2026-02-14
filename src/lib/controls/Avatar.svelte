@@ -14,7 +14,12 @@
   }
 </script>
 
-<button class="container" id="avatar" popovertarget="avatar-popover">
+<button
+  class="container"
+  id="avatar"
+  data-testid="my-avatar"
+  popovertarget="avatar-popover"
+>
   {#if user?.avatar}
     <img
       src={pb.files.getURL(user, user?.avatar)}
@@ -47,6 +52,7 @@
     width="100%"
     icon="material-symbols:logout-rounded"
     press={onLogoutPress}
+    id="logout-button"
   />
 </div>
 

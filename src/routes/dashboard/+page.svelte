@@ -120,6 +120,7 @@
 
       <div class="list">
         <Input
+          id="new-todo-input"
           class="create-todo"
           placeholder="Add new todo..."
           value={""}

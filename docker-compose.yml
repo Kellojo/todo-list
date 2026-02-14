@@ -9,4 +9,4 @@ services:
       - /app/pb_data
     volumes:
       - ./static/background.png:/app/pb_public/_app/immutable/assets/background.png:ro
-    restart: unless-stopped
+    #restart: unless-stopped

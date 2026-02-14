@@ -57,9 +57,10 @@
   }
 </script>
 
-<div class="item" role="button" tabindex="-1">
-  <Checkbox {completed} onchange={checkedChange} />
+<div class="item" role="button" tabindex="-1" data-testid="todo-item">
+  <Checkbox id="todo-checkbox" {completed} onchange={checkedChange} />
   <span
+    data-testid="todo-item-title"
     bind:this={titleField}
     class:completed
     contenteditable="true"
@@ -68,8 +69,11 @@
   >
     {title}
   </span>
-  <button bind:this={deleteButton} class="delete-btn" onclick={onDeleteTodo}
-    >×</button
+  <button
+    data-testid="todo-delete-button"
+    bind:this={deleteButton}
+    class="delete-btn"
+    onclick={onDeleteTodo}>×</button
   >
 </div>
 

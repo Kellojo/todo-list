@@ -4,10 +4,11 @@
   let {
     completed = $bindable<boolean>(),
     onchange = $bindable<EventHandler>(),
+    id = $bindable<string>(),
   } = $props();
 </script>
 
-<input type="checkbox" bind:checked={completed} {onchange} />
+<input data-testid={id} type="checkbox" bind:checked={completed} {onchange} />
 
 <style>
   input[type="checkbox"] {
